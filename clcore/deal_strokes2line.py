@@ -1,6 +1,12 @@
 # -*- coding:utf-8 -*-
+import sys
+sys.path.append('..')
+
 import pandas as pd
 import matplotlib.pyplot as plt
+
+from sharesAnalysis.conf import conf
+from sharesAnalysis.clcore import k2strokes
 
 '''
 线段处理逻辑:
