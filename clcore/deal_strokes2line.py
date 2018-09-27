@@ -78,6 +78,15 @@ def dealStrokes2Line(strokesList):
 	# 2.特征序列标准化（包含处理）后连线
 	cnt = len(strokesList)-1
 	while idx < cnt:
+		# 取出3笔
+		s3 = strokesList[idx:idx+3]
+		# 判断是否构成线段、包含关系是否成立
+
+		# 成立包含关系
+
+		# 线段延续
+
+		# 新线段成立
 
 		idx += 1
 
