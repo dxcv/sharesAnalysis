@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 
 from sharesAnalysis.conf import conf
 from sharesAnalysis.clcore import Stokes,k2strokes
+from sharesAnalysis.clcore import Line
 
 '''
 线段处理逻辑:
@@ -19,10 +20,30 @@ from sharesAnalysis.clcore import Stokes,k2strokes
 	4. 第一种情况，1,2特征元素之间不存在缺口
 	5. 第二种情况，1,2特征元素之间存在缺口
 '''
-def isLine(dirction,begin,end):
+
+def isLine(dirction,begin,end, dirctionType='顶底分型'):
+	'''
+	功能: 判断是否成线段
+	:param dirction:
+	:param begin:
+	:param end:
+	:param dirctionType: 默认是顶分型-底分型（底分型-顶分型）、同向分型
+	:return:
+	'''
 	print(dirction,'\n',begin,end)
-	b = begin['最高价'] if dirction == '向下' else begin['最低价']
-	e = begin['最低价'] if dirction == '向下' else begin['最高价']
+	if dirctionType == '顶底分型':
+		b = begin['最高价'] if dirction == '向下' else begin['最低价']
+	else:
+		b = begin['最低价'] if dirction == '向下' else begin['最高价']
+
+	e = end['最低价'] if dirction == '向下' else end['最高价']
+	r = True if (dirction == '向下' and b>=e) or (dirction == '向上' and b<=e) else False
+	return r
+
+def isLineBySameType(dirction,begin,end):
+	print(dirction,'\n',begin,end)
+	b = begin['最低价'] if dirction == '向下' else begin['最高价']
+	e = end['最低价'] if dirction == '向下' else end['最高价']
 	r = True if (dirction == '向下' and b>=e) or (dirction == '向上' and b<=e) else False
 	return r
 
@@ -36,13 +57,21 @@ def s_inclusion():
 	pass
 
 def deal_line(strokesList):
+	lineList=[]
 	idx = 0
 	# 1. 确定起笔
 	#   如果三笔现成的一段，方向与第一笔是相悖的，说明起笔不对
-	ret = isLine( strokesList[0].direction,strokesList[0].begin,strokesList[2].end )
-	print(ret)
+	ret1 = isLine( strokesList[0].direction,strokesList[0].begin,strokesList[2].end )
+	ret2 = isLine( strokesList[0].direction,strokesList[0].end,strokesList[2].end, dirctionType='同向' )
+	print(ret2)
 
+	# 如果第一线段规则不成立，则认为第一笔为线段看待
+	if not(ret1 and ret2):
+		l = Line(strokesList[0].begin, strokesList[0].end,strokesList[0].direction)
+		lineList.append(l)
 
+	#print(lineList)
+	print(lineList[0])
 	# 2.特征序列标准化（包含处理）后连线
 
 	# 3. 处理待确认的线段
