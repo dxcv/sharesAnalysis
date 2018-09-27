@@ -56,37 +56,40 @@ def s_standry():
 def s_inclusion():
 	pass
 
-def deal_line(strokesList):
+def dealStrokes2Line(strokesList):
 	lineList=[]
 	idx = 0
 	# 1. 确定起笔
 	#   如果三笔现成的一段，方向与第一笔是相悖的，说明起笔不对
-	ret1 = isLine( strokesList[0].direction,strokesList[0].begin,strokesList[2].end )
-	ret2 = isLine( strokesList[0].direction,strokesList[0].end,strokesList[2].end, dirctionType='同向' )
-	print(ret2)
+	#ret1 = isLine( strokesList[0].direction,strokesList[0].begin,strokesList[2].end )
+	#ret2 = isLine( strokesList[0].direction,strokesList[0].end,strokesList[2].end, dirctionType='同向' )
+	#print(ret2)
 
 	# 如果第一线段规则不成立，则认为第一笔为线段看待
-	if not(ret1 and ret2):
-		l = Line(strokesList[0].begin, strokesList[0].end,strokesList[0].direction)
-		lineList.append(l)
+	#if not(ret1 and ret2):
+		#l = Line(strokesList[0].begin, strokesList[0].end,strokesList[0].direction)
+		#lineList.append(l)
 
-	#print(lineList)
+	#1. 预设第一笔为线段，线段类型为笔
+	l = Line(strokesList[0].begin, strokesList[0].end,strokesList[0].direction)
+	lineList.append(l)
+
 	print(lineList[0])
 	# 2.特征序列标准化（包含处理）后连线
+	cnt = len(strokesList)-1
+	while idx < cnt:
+
+		idx += 1
 
 	# 3. 处理待确认的线段
-
-	pass
 
 def test_01():
 	import pickle
 	output = open('F:\\data\\log\\600000\\strokesList.pk', 'rb')
 	strokesList = pickle.load(output)
-	#Stokes()
 	print(strokesList[0])
-	deal_line(strokesList)
+	dealStrokes2Line(strokesList)
 
 if __name__ == '__main__':
-	import os
 	import sys
 	test_01()
