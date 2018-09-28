@@ -20,6 +20,10 @@ from sharesAnalysis.clcore import Line
 	4. 第一种情况，1,2特征元素之间不存在缺口
 	5. 第二种情况，1,2特征元素之间存在缺口
 '''
+# 成线段
+def isLine1(s3):
+	# 1. 明显不成为一段的（存在缺口情况）
+	pass
 
 def isLine(dirction,begin,end, dirctionType='顶底分型'):
 	'''
@@ -47,6 +51,16 @@ def isLineBySameType(dirction,begin,end):
 	r = True if (dirction == '向下' and b>=e) or (dirction == '向上' and b<=e) else False
 	return r
 
+# 缺口判断
+# 如果当前判断点之前为只有一笔
+# 如果当前判断点之前没有笔
+# 如果当前判断带你之前为线段
+def s_gap():
+	pass
+
+# 分型、包含关系
+def s_judge(ld,rd):
+	pass
 
 def drawLine():
 	pass
@@ -61,14 +75,18 @@ def dealStrokes2Line(strokesList):
 	idx = 0
 	# 1. 确定起笔
 	#   如果三笔现成的一段，方向与第一笔是相悖的，说明起笔不对
-	#ret1 = isLine( strokesList[0].direction,strokesList[0].begin,strokesList[2].end )
-	#ret2 = isLine( strokesList[0].direction,strokesList[0].end,strokesList[2].end, dirctionType='同向' )
+	ret1 = isLine( strokesList[0].direction,strokesList[0].begin,strokesList[2].end )
+	ret2 = isLine( strokesList[0].direction,strokesList[0].end,strokesList[2].end, dirctionType='同向' )
 	#print(ret2)
 
 	# 如果第一线段规则不成立，则认为第一笔为线段看待
-	#if not(ret1 and ret2):
-		#l = Line(strokesList[0].begin, strokesList[0].end,strokesList[0].direction)
-		#lineList.append(l)
+	if not(ret1 and ret2):
+		l = Line(strokesList[0].begin, strokesList[0].end,strokesList[0].direction, '笔')
+		idx = 1
+	else:
+		l = Line(strokesList[0].begin, strokesList[2].end,strokesList[0].direction,'线段')
+		idx = 2
+	lineList.append(l)
 
 	#1. 预设第一笔为线段，线段类型为笔
 	l = Line(strokesList[0].begin, strokesList[0].end,strokesList[0].direction)
@@ -76,10 +94,14 @@ def dealStrokes2Line(strokesList):
 
 	print(lineList[0])
 	# 2.特征序列标准化（包含处理）后连线
-	cnt = len(strokesList)-1
+	cnt = len(strokesList)-idx
 	while idx < cnt:
 		# 取出3笔
 		s3 = strokesList[idx:idx+3]
+
+		# 缺口判断
+
+
 		# 判断是否构成线段、包含关系是否成立
 
 		# 成立包含关系

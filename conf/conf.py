@@ -4,7 +4,7 @@ import configparser
 class Config:
 	confdict = {}
 
-	def __init__(self,confPath="D:\\分析系统\\sharesAnalysis\\conf\\config.ini",encoding='utf-8'):
+	def __init__(self,confPath="D:\\sharesAnalysis\\sharesAnalysis\\conf\\config.ini",encoding='utf-8'):
 		self.conf = configparser.ConfigParser()
 		self.conf.read(confPath,encoding=encoding)
 

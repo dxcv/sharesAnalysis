@@ -1,11 +1,11 @@
 # -*- coding:utf-8 -*-
 
 class Line:
-	def __init__(self, begin, end, direction):
+	def __init__(self, begin, end, direction,lineType='线段'):
 		self.begin 	= begin
 		self.end 	= end
 		self.status	= '待确认' # 待确认、确认
-		self.lineType= '笔' # 笔、线段
+		self.lineType= lineType# 笔、线段     #、准线段
 		self.direction = direction
 
 	def __str__(self):
