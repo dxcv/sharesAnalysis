@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 
-class Stokes:
+class Strokes:
 	def __init__(self, begin, end, status='正常一笔', isContinue='未延笔', reDeal='未重处理'):
 		self.begin = begin
 		self.end = end

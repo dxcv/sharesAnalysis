@@ -7,9 +7,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 from sharesAnalysis.conf import conf
-from sharesAnalysis.clcore import Stokes,k2strokes
-from sharesAnalysis.clcore import Line
-
+from sharesAnalysis.clcore import Strokes,k2strokes
+from sharesAnalysis.clcore import Line,LINE_TYPE,LINE_JUDGE
+from dweunit.unit import log_error, log_warning, log_debug, log_info
 '''
 线段处理逻辑:
 	把笔按以下方式进行处理
@@ -52,11 +52,30 @@ def isLineBySameType(dirction,begin,end):
 	return r
 
 # 缺口判断
-# 如果当前判断点之前为只有一笔
-# 如果当前判断点之前没有笔
-# 如果当前判断带你之前为线段
-def s_gap():
-	pass
+def s_gap( strokes_now:Strokes, line_befor:Line==None ):
+	'''
+	按三种情况对笔缺口进行判断
+	:param strokes_now:
+	:param line_befor:
+	:return: True 存在缺口,False 不存在缺口
+	'''
+	#1. 如果当前判断点之前没有笔
+	# 按存在缺口处理
+	if line_befor is None:
+		pass
+
+	#2. 如果当前判断点之前为只有一笔
+	# 当前一笔不能够包住前一笔，则认为是存在缺口
+	elif LINE_TYPE[line_befor.lineType] == LINE_TYPE['笔']:
+		pass
+
+	#3. 如果当前判断带你之前为线段
+	# 按标准缺口判断处理
+	elif LINE_TYPE[line_befor.lineType] == LINE_TYPE['线段']:
+		pass
+	else:
+		log_error( '线段类型设置有问题 line.type:%s' % str(line_befor.lineType) )
+		raise('线段类型设置有问题')
 
 # 分型、包含关系
 def s_judge(ld,rd):
@@ -67,6 +86,7 @@ def drawLine():
 
 def s_standry():
 	pass
+
 def s_inclusion():
 	pass
 
@@ -94,23 +114,45 @@ def dealStrokes2Line(strokesList):
 
 	print(lineList[0])
 	# 2.特征序列标准化（包含处理）后连线
-	cnt = len(strokesList)-idx
+	# 判断是否构成线段、包含关系是否成立
+	# 成立包含关系
+	# 线段延续
+	# 新线段成立
+	cnt 			= len(strokesList)-idx
+	curJudge		= LINE_JUDGE['启动']
+	nextStrokesList	=[]
 	while idx < cnt:
 		# 取出3笔
 		s3 = strokesList[idx:idx+3]
+		idx +=1
 
-		# 缺口判断
+		# 缺口判断 属于下一个线段的初始入口位置
+		if LINE_JUDGE[curJudge] == LINE_JUDGE['启动'] or LINE_JUDGE[curJudge] == LINE_JUDGE['判断缺口']:
+			line_b 	= None if len(lineList) ==0 else lineList[-1]
+			gap 	= s_gap(s3[0], line_b)
+			curJudge= '第一种情况' if gap else '第二种情况'
 
+			#重置下一线段的笔list
+			nextStrokesList=[s3[0]]
 
-		# 判断是否构成线段、包含关系是否成立
+			continue
 
-		# 成立包含关系
+		# 优先判断是否存在包含关系
+		else:
+			#isIn= s_judge()
+			#if isIn:
+			#	continue
+			pass
 
-		# 线段延续
+		# 如果当前一笔与前一线段方向相同，判断是否延续，否则判断反方向分型是否成立
+		if LINE_JUDGE[curJudge] == LINE_JUDGE['第一种情况']:
+			print('第一种情况')
+			pass
 
-		# 新线段成立
+		elif LINE_JUDGE[curJudge] == LINE_JUDGE['第二种情况']:
+			print('第二种情况')
 
-		idx += 1
+		#idx += 1
 
 	# 3. 处理待确认的线段
 
