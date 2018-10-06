@@ -106,15 +106,25 @@ def s_inclusion(b_strokes:Strokes,e_strokes:Strokes):
 	print ( eb['关系'] )
 	print ( ee['关系'] )
 	r = ''
-	if FX_CLASS[eb['关系']] == FX_CLASS['顶分型']:
-		if bb['最高价']>=eb['最高价'] and be['最低价']<=ee['最低价']:
-			r = KSL_INCLUDE['右包含']
-		elif eb['最高价']>=bb['最高价'] and ee['最低价']<=be['最低价']:
-			r = KSL_INCLUDE['左包含']
+	# 交换
+	if FX_CLASS[eb['关系']] == FX_CLASS['底分型']:
+		t  = bb
+		bb = be
+		be = t
 
-	elif FX_CLASS[eb['关系']] == FX_CLASS['底分型']:
-		pass
-	print(r)
+		t  = eb
+		eb = ee
+		ee = t
+
+	# 按 '顶分型'方式判断
+	if bb['最高价']>=eb['最高价'] and be['最低价']<=ee['最低价']:
+		r = KSL_INCLUDE['右包含']
+	elif eb['最高价']>=bb['最高价'] and ee['最低价']<=be['最低价']:
+		r = KSL_INCLUDE['左包含']
+	else:
+		r = KSL_INCLUDE['非包含']
+
+	return r
 
 
 # 同方向包含
@@ -156,8 +166,17 @@ def dealStrokes2Line(strokesList):
 	nextStrokesList	=[]
 	while idx < cnt:
 		# 取出3笔
-		s3 = strokesList[idx:idx+3]
-		idx +=1
+		s3   = strokesList[idx:idx+3]
+		idx += 1
+
+		# 优先判断是否存在包含关系
+		if s3[0].direction  == b_strokes.direction:
+			sin = s_inclusion(b_strokes, s3[0])
+			print(sin)
+			if KSL_INCLUDE[sin] != KSL_INCLUDE['非包含']:
+				print('-------------------------------')
+		else:
+			print('不用处理包含关系....')
 
 		# 缺口判断 属于下一个线段的初始入口位置
 		if LINE_JUDGE[curJudge] == LINE_JUDGE['启动'] or LINE_JUDGE[curJudge] == LINE_JUDGE['判断缺口']:
@@ -170,9 +189,6 @@ def dealStrokes2Line(strokesList):
 
 			continue
 
-		# 优先判断是否存在包含关系
-		if s3[0].direction  == b_strokes.direction:
-			s_inclusion(b_strokes, s3[0])
 		#isIn= s_judge()
 		#if isIn:
 		#	continue
@@ -180,7 +196,6 @@ def dealStrokes2Line(strokesList):
 		# 如果当前一笔与前一线段方向相同，判断是否延续，否则判断反方向分型是否成立
 		if LINE_JUDGE[curJudge] == LINE_JUDGE['第一种情况']:
 			print('第一种情况')
-			pass
 
 		elif LINE_JUDGE[curJudge] == LINE_JUDGE['第二种情况']:
 			print('第二种情况')

@@ -12,6 +12,7 @@ FX_CLASS={
 KSL_INCLUDE={
 	'左包含':'左包含',
 	'右包含':'右包含',
+	'非包含':'非包含',
 }
 
 class Strokes:
