@@ -7,7 +7,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 from sharesAnalysis.conf import conf
-from sharesAnalysis.clcore import Strokes,k2strokes
+from sharesAnalysis.clcore import STROKES_DIRECTION,FX_CLASS,KSL_INCLUDE, Strokes,k2strokes
 from sharesAnalysis.clcore import Line,LINE_TYPE,LINE_JUDGE
 from dweunit.unit import log_error, log_warning, log_debug, log_info
 '''
@@ -87,7 +87,38 @@ def drawLine():
 def s_standry():
 	pass
 
-def s_inclusion():
+# 任意方向包含
+def s_inclusion(b_strokes:Strokes,e_strokes:Strokes):
+	# 同方向判断
+	if b_strokes.direction==e_strokes.direction:
+		bb = e_strokes.begin
+		be = e_strokes.end
+
+		eb = e_strokes.begin
+		ee = e_strokes.end
+	else: #不同方向判断
+		bb = e_strokes.begin
+		be = e_strokes.end
+
+		eb = e_strokes.end
+		ee = e_strokes.begin
+
+	print ( eb['关系'] )
+	print ( ee['关系'] )
+	r = ''
+	if FX_CLASS[eb['关系']] == FX_CLASS['顶分型']:
+		if bb['最高价']>=eb['最高价'] and be['最低价']<=ee['最低价']:
+			r = KSL_INCLUDE['右包含']
+		elif eb['最高价']>=bb['最高价'] and ee['最低价']<=be['最低价']:
+			r = KSL_INCLUDE['左包含']
+
+	elif FX_CLASS[eb['关系']] == FX_CLASS['底分型']:
+		pass
+	print(r)
+
+
+# 同方向包含
+def s_inclusion_relationship(b_strokes:Strokes,e_strokes:Strokes):
 	pass
 
 def dealStrokes2Line(strokesList):
@@ -102,15 +133,17 @@ def dealStrokes2Line(strokesList):
 	# 如果第一线段规则不成立，则认为第一笔为线段看待
 	if not(ret1 and ret2):
 		l = Line(strokesList[0].begin, strokesList[0].end,strokesList[0].direction, '笔')
+		b_strokes = strokesList[0]
 		idx = 1
 	else:
 		l = Line(strokesList[0].begin, strokesList[2].end,strokesList[0].direction,'线段')
+		b_strokes = strokesList[1]
 		idx = 2
 	lineList.append(l)
 
 	#1. 预设第一笔为线段，线段类型为笔
-	l = Line(strokesList[0].begin, strokesList[0].end,strokesList[0].direction)
-	lineList.append(l)
+	#l = Line(strokesList[0].begin, strokesList[0].end,strokesList[0].direction)
+	#lineList.append(l)
 
 	print(lineList[0])
 	# 2.特征序列标准化（包含处理）后连线
@@ -138,11 +171,11 @@ def dealStrokes2Line(strokesList):
 			continue
 
 		# 优先判断是否存在包含关系
-		else:
-			#isIn= s_judge()
-			#if isIn:
-			#	continue
-			pass
+		if s3[0].direction  == b_strokes.direction:
+			s_inclusion(b_strokes, s3[0])
+		#isIn= s_judge()
+		#if isIn:
+		#	continue
 
 		# 如果当前一笔与前一线段方向相同，判断是否延续，否则判断反方向分型是否成立
 		if LINE_JUDGE[curJudge] == LINE_JUDGE['第一种情况']:
