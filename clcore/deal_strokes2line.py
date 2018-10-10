@@ -88,9 +88,9 @@ def s_standry():
 	pass
 
 # 任意方向包含
-def s_inclusion(b_strokes:Strokes,e_strokes:Strokes):
+def s_inclusion(t1_strokes:Strokes,e_strokes:Strokes):
 	# 同方向判断
-	if b_strokes.direction==e_strokes.direction:
+	if t1_strokes.direction==e_strokes.direction:
 		bb = e_strokes.begin
 		be = e_strokes.end
 
@@ -128,7 +128,7 @@ def s_inclusion(b_strokes:Strokes,e_strokes:Strokes):
 
 
 # 同方向包含
-def s_inclusion_relationship(b_strokes:Strokes,e_strokes:Strokes):
+def s_inclusion_relationship(t1_strokes:Strokes,e_strokes:Strokes):
 	pass
 
 def dealStrokes2Line(strokesList):
@@ -140,15 +140,16 @@ def dealStrokes2Line(strokesList):
 	ret2 = isLine( strokesList[0].direction,strokesList[0].end,strokesList[2].end, dirctionType='同向' )
 	#print(ret2)
 
+	t1_strokes = None # 特征序列判断分型的1,2,3笔的第一笔
+	#strokesList[0]
 	# 如果第一线段规则不成立，则认为第一笔为线段看待
 	if not(ret1 and ret2):
 		l = Line(strokesList[0].begin, strokesList[0].end,strokesList[0].direction, '笔')
-		b_strokes = strokesList[0]
 		idx = 1
 	else:
 		l = Line(strokesList[0].begin, strokesList[2].end,strokesList[0].direction,'线段')
-		b_strokes = strokesList[1]
-		idx = 2
+		t1_strokes = strokesList[1]
+		idx = 3
 	lineList.append(l)
 
 	#1. 预设第一笔为线段，线段类型为笔
@@ -170,8 +171,8 @@ def dealStrokes2Line(strokesList):
 		idx += 1
 
 		# 优先判断是否存在包含关系
-		if s3[0].direction  == b_strokes.direction:
-			sin = s_inclusion(b_strokes, s3[0])
+		if t1_strokes!=None and s3[0].direction  == t1_strokes.direction:
+			sin = s_inclusion(t1_strokes, s3[0])
 			print(sin)
 			if KSL_INCLUDE[sin] != KSL_INCLUDE['非包含']:
 				print('-------------------------------')
