@@ -165,7 +165,9 @@ def dealStrokes2Line(strokesList):
 	cnt 			= len(strokesList)-idx
 	curJudge		= LINE_JUDGE['启动']
 	nextStrokesList	=[]
+	b_maybyLine = -1
 	while idx < cnt:
+		print('---------------------in while --------------------')
 		# 取出3笔
 		s3   = strokesList[idx:idx+3]
 		idx += 1
@@ -176,7 +178,10 @@ def dealStrokes2Line(strokesList):
 			print(sin)
 			if KSL_INCLUDE[sin] != KSL_INCLUDE['非包含']:
 				print('-------------------------------')
-		else:
+			#else:
+				#nextStrokesList.append(s3[0])
+		elif t1_strokes==None:
+			t1_strokes = s3[0]
 			print('不用处理包含关系....')
 
 		# 缺口判断 属于下一个线段的初始入口位置
@@ -187,6 +192,7 @@ def dealStrokes2Line(strokesList):
 
 			#重置下一线段的笔list
 			nextStrokesList=[s3[0]]
+			b_maybyLine = idx
 
 			continue
 
