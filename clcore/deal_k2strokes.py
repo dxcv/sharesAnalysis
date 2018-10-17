@@ -67,10 +67,17 @@ def k_judge(ld,rd):
 
 	return  rela
 
+def k_platform(kdata:pd.DataFrame):
+	rela, dealidx = k_direction(kdata)
+	if rela =='顶分型' or rela == '底分型':
+		return '分型'
+	if rela == '左包含' or rela == '右包含':
+		pass
+
 # k线方向、顶、底、包含关系判断
 #def k_top():
 #def k_bottom():
-def k_direction(kdata):
+def k_direction(kdata:pd.DataFrame):
 	k0 = kdata.iloc[0]
 	k1 = kdata.iloc[1]
 	k2 = kdata.iloc[2]
